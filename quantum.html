@@ -1,0 +1,180 @@
+<html>
+    <h1 align = "center">Cellular simulation of Schrodinger Wave mechanics</h1>
+    <h2 align = "center">in Flat and Curved two dimensional space</h1>
+    <canvas align = "center" id = "myc"></canvas>
+    <body>
+    <script>
+
+        //The work of Joshua Lin; joshua.z.lin@gmail.com
+        //Probably for 137B Fall 2017 with Professor A.Charman
+
+        var canvas = document.getElementById("myc");
+        var context = canvas.getContext('2d');
+        
+        var cW = 900;
+        var cH = 400;
+
+        canvas.style.width = cW;
+        canvas.style.height = cH;
+        canvas.width = cW;
+        canvas.height = cH;
+
+        canvas.style.marginLeft = "auto";
+        canvas.style.marginRight = "auto";
+        canvas.parentElement.style.textAlign = "center";
+
+        canvas.style.backgroundColor = "gray";
+
+        var circX = 250;
+        var circY = 250;
+        var circR = 150;
+        
+        var numCells = 100; //The number of cells in the simulation for the flat case
+        var cells = []
+		var resolution = 1; //Something to do with the resolution of the simulation
+        //So the basic information stored in a single cell is the wavefunction as a complex number
+
+        for (i = 0; i < numCells; i++){
+                cells.push([]);
+                for (j = 0; j < numCells; j++){
+                        if (i == Math.floor(numCells/2)){
+                        if (j == Math.floor(numCells/2)){
+                                //Initialise as delta function in the middle of the simulation
+                                cells[cells.length-1].push([1,0]);
+                                continue;
+                        }
+                        }
+                        cells[cells.length - 1].push([0,0]);
+                }
+        }
+        //So now cells is a numCells * numCells array of complex numbers
+                    
+
+        //So the basic idea is that for the flat geometry; we will create an imgData object
+        //Where we will store all the pixels
+        //Then finally, we will distort this image Data with some transform function
+        //Remember to do everything in terms of global variables so parameters can be changed later
+
+		function returnPolar(x,y){
+				return [Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5), Math.atan2(y,x)];
+		}
+
+
+        function flatTransform(x,y){
+                //Returns the coordinates in the circle for a point (x,y) in cartesian
+                var polar = returnPolar(x,y);
+				polar[0] = circR*Math.atan(r)/(Math.PI/2);
+                return polar;
+        }
+
+		function curveToCellular(x,y){
+				//takes two coordinates, x and y, relative to the center of the circle
+				//THE COORDINATES ARE SCREEN COORDINATES
+				//Then we find which 
+
+
+        function drawFlatBase(){
+                //The flat base within which we place our transformed image data
+                //An idea is to have a fade effect towards the edges as "space goes to infinity"
+                context.beginPath();
+                context.arc(circX,circY,circR, 0, 2*Math.PI, false);
+                context.lineWidth = 3;
+                context.strokeStyle = "black";
+                context.stroke();
+                context.fillStyle = "white";
+                context.fill();
+        }
+
+		//HSL TO RGB THANKS TO https://gist.github.com/mjackson
+		/**
+		 * Converts an HSL color value to RGB. Conversion formula
+		 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+		 * Assumes h, s, and l are contained in the set [0, 1] and
+		 * returns r, g, and b in the set [0, 255].
+		 *
+		 * @param   {number}  h       The hue
+		 * @param   {number}  s       The saturation
+		 * @param   {number}  l       The lightness
+		 * @return  {Array}           The RGB representation
+		 */
+		function hslToRgb(h, s, l){
+			var r, g, b;
+
+			if(s == 0){
+				r = g = b = l; // achromatic
+			}else{
+				var hue2rgb = function hue2rgb(p, q, t){
+					if(t < 0) t += 1;
+					if(t > 1) t -= 1;
+					if(t < 1/6) return p + (q - p) * 6 * t;
+					if(t < 1/2) return q;
+					if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+					return p;
+				}
+
+				var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+				var p = 2 * l - q;
+				r = hue2rgb(p, q, h + 1/3);
+				g = hue2rgb(p, q, h);
+				b = hue2rgb(p, q, h - 1/3);
+			}
+
+			return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+		}
+
+		function polarToRgb(r, theta){
+			//This takes the polar form of the wavefunction and returns the RGB values
+
+			var H = Math.PI + theta;
+			var L = (1 - Math.pow(2, -r));
+			var S = 1;
+			return hslToRgb(H,S,L);
+		}
+			
+
+		function rawImageData(){
+
+			var img = context.createImageData(numCells, numCells);
+			var place = 0;
+			var polar = [];
+			var rgb = [];
+			
+			for (i = 0; i < numCells; i++){
+			for (j = 0; j < numCells; j++){
+				place = 4*numCells*i + 4*numCells*j;
+				polar = returnPolar(cells[i][j][0], cells[i][j][1]);
+				rgb = polarToRgb(polar[0][1]);
+				img[place] = rgb[0];
+				img[place + 1] = rgb[1];
+				img[place + 2] = rgb[2];
+				img[place + 3] = 1;
+			}
+			}
+			return img;
+		}
+
+        function drawCells(){
+                //Now the idea is that polar angle will correspond to color
+                //and the radius to saturation. More precisely, we use the first method described in this
+				//https://en.wikipedia.org/wiki/Color_wheel_graphs_of_complex_functions wikipedia article
+
+				img = rawImageData();
+				imgDis = context.createImageData(2*circR, 2*circR);
+				place = 0;
+
+				for (i = 0; i < numCells; i++){
+				for (j = 0; j < numCells; j++){
+					
+				
+        }
+
+        function initialiseCells(){
+
+
+        
+
+
+
+    </script>
+    </body>
+</html>

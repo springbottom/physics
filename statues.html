@@ -1,0 +1,125 @@
+<html>
+<canvas id = "myc"></canvas>
+<body>
+<script>
+
+    //Declare canvas and context
+    var myc = document.getElementById("myc");
+    var ctx = myc.getContext('2d');
+    
+    //Fix the widths and the height to fill screen
+    myc.style.width = window.innerWidth;
+    myc.width = window.innerWidth;
+    myc.style.height = window.innerHeight;
+    myc.height = window.innerHeight;
+
+    //Fix the position of the canvas
+    myc.style.position = "absolute";
+    myc.style.left = 0;
+    myc.style.top = 0;
+
+    //Set the style of the canvas
+    myc.style.backgroundColor = "grey";
+
+    //Set some global variables
+    var iW = window.innerWidth;
+    var iH = window.innerHeight;
+    var mag = 100; //magnification factor for drawing
+    var speed = 0.001; //The speed parameter; how fast things move
+    var g = 1; //the gravity parameter
+    var nL = 1; //this is the natural length of the spring
+    var pWell = 8 //This is the depth of the potential well attraction
+
+    //Lets define what the force between two particles is; given a distance in a single coordinate
+    function simpleForce(x1, x2){
+            return ((1/math.abs(x1 - x2))*(- math.log(pWell*(x1 - x2))))
+    }
+
+
+    //Lets define what a vertex is
+    function vertex(name, nbrs, x, y, z){
+            //Name is an integer index of the array of vertices
+            //nbrs is an array of integer indexes
+            this.name = name;
+            this.nbrs = nbrs;
+
+            //x,y,z are spatial coordinates; floats
+            this.x = x;
+            this.y = y;
+            this.z = z;
+
+            //vx,vy,vz are velocity coordinates; floats
+            this.vx = 0;
+            this.vy = 0;
+            this.vz = 0;
+
+            //Debug function - for test purposes!~
+            this.debug = function(){
+                    console.log(this.x);
+                    console.log(this.y);
+                    console.log(this.z);
+                    console.log(this.name);
+            }
+
+            //The move function - to move the vertex according to physics
+            this.move = function(){
+                    var ax = 0;
+                    var ay = g;
+                    var az = 0;
+
+                    for (var i = 0; i < this.nbrs.length; i++){
+                        //iterate over the nbrs
+                        ax = ax + (aV[this.nbrs[i]].x - this.x);                    
+                        ay = ay + (aV[this.nbrs[i]].y - this.y);
+                        az = az + (aV[this.nbrs[i]].z - this.z);
+                    }
+
+                    this.vx = this.vx + ax;
+                    this.vy = this.vy + ay;
+                    this.vz = this.vz + az;
+
+                    this.x = this.x + this.vx*speed;
+                    this.y = this.y + this.vy*speed;
+                    this.z = this.z + this.vz*speed;
+            }
+
+            //The show? function; that shows this particle on the screen
+            this.show = function(){
+                    ctx.beginPath();
+                    ctx.arc(iW/2 + this.x*mag, iH/2 + this.y*mag, 2, 0, 2*Math.PI, false);
+                    ctx.fillStyle = "black";
+                    ctx.fill();
+            }
+    }
+
+
+    //Here are the more runtime variables
+    var aV = []; //This is the array of vertices
+
+    function loadThing(){
+        aV = [];
+        aV.push(new vertex(0, [2,3,4,5], 1,0,2));
+        aV.push(new vertex(1, [2,3,4,5], -1,0,2));
+        aV.push(new vertex(2, [0,1,4,5], 0,1,2));
+        aV.push(new vertex(3, [0,1,4,5], 0,-1,2));
+        aV.push(new vertex(4, [0,1,2,3], 0,0,3));
+        aV.push(new vertex(5, [0,1,2,3], 0,0,1));
+    }
+
+    loadThing();
+
+
+    function start(){
+            for (i = 0; i < aV.length; i++){
+                ctx.clearRect(0,0,iW, iH);
+                aV[i].move();
+                aV[i].show();
+            }
+    }
+
+    //window.setInterval(start(),1000);
+
+
+</script>
+</body>
+</html>
