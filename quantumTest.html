@@ -1,0 +1,24 @@
+<html>
+<canvas id = 'myc'></canvas>
+<body>
+<script>
+var canvas = document.getElementById("myc");
+var context = canvas.getContext('2d');
+
+var imageData = context.createImageData(1,1);
+data = imageData.data;
+data[0] = 200;
+data[1] = 101;
+data[2] = 100;
+data[3] = 255;
+
+for (var i = 0; i < 100; i++){
+for (var j = 0; j < 100; j++){
+	context.putImageData(imageData, i, j);
+}
+}
+
+
+</script>
+</body>
+</html>

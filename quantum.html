@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <h1 align = "center">Cellular simulation of Schrodinger Wave mechanics</h1>
 <h2 align = "center">in Flat and Curved two dimensional space</h1>
@@ -79,7 +80,7 @@ function ZblankPotential(){
 }
 
 
-function ZhslToRgb(h, s, l){
+function ZhslToRgb(h, s, l, debug){
 	var r, g, b;
 
 	if(s == 0){
@@ -99,22 +100,35 @@ function ZhslToRgb(h, s, l){
 		r = hue2rgb(p, q, h + 1/3);
 		g = hue2rgb(p, q, h);
 		b = hue2rgb(p, q, h - 1/3);
+		if (debug == 1){
+			console.log(r);
+			console.log(g);
+			console.log(b);
+		}
 	}
 
 	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
-function ZpolarToRgb(r, theta){
+function ZpolarToRgb(r, theta, debug){
 	//This takes the polar form of the wavefunction and returns the RGB values
 
-	var H = Math.PI + theta;
+	var H = (Math.PI + theta)/(2*Math.PI);
 	var L = (1 - Math.pow(2, -r));
 	var S = 1;
-	return ZhslToRgb(H,S,L);
+
+	if (debug == 1){
+		console.log(H);
+		console.log(L);
+		console.log(S);
+	}
+
+	return ZhslToRgb(H,S,L,debug);
 }
 
 function ZImageData(){
-	var img = context.createImageData(2*circR, 2*circR);
+	var imgData = context.createImageData(2*circR, 2*circR);
+	var img = imgData.data;
 	var place = 0;
 	var polar = [];
 
@@ -125,17 +139,16 @@ function ZImageData(){
 			img[place] = rgb[0];
 			img[place + 1] = rgb[1];
 			img[place + 2] = rgb[2];
-			img[place + 3] = 1;
+			img[place + 3] = 255;
 			if (rgb[0] != 0){
-				console.log('yay');
-				console.log(Zcells[i][j]);
-				console.log(rgb[0]);
-				console.log(rgb[1]);
-				console.log(rgb[2]);
+				//console.log('yay');
+				//console.log(Zcells[i][j]);
+				//console.log(rgb);
+				//console.log(ZpolarToRgb(Zcells[i][j][0],Zcells[i][j][1],1));
 			}
 		}
 	}
-	return img;
+	return imgData;
 }
 
 function Zdraw(){
@@ -157,15 +170,18 @@ function ZcartesianToPolar(x,y){
 	return [Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5), Math.atan2(y,x)];
 }
 
-var Zscale = 1;
+var Zscale = 300;
 
 function ZflatDistance(i,j,k,l){
 	//Distance between Zcells[i][j] and Zcells[k][l]
-	var polar1 = ZcartesianToPolar((i - circR)*Zscale, (j - circR)*Zscale);
-	var polar2 = ZcartesianToPolar((k - circR)*Zscale, (l - circR)*Zscale);
+	var polar1 = ZcartesianToPolar((i - circR), (j - circR));
+	var polar2 = ZcartesianToPolar((k - circR), (l - circR));
 
 	polar1[0] = Math.tan((Math.PI/2)*polar1[0]/circR);
 	polar2[0] = Math.tan((Math.PI/2)*polar2[0]/circR);
+
+	polar1[0] = polar1[0]*Zscale;
+	polar2[0] = polar2[0]*Zscale;
 
 	var cart1 = ZpolarToCartesian(polar1[0],polar1[1]);
 	var cart2 = ZpolarToCartesian(polar2[0],polar2[1]);
@@ -175,11 +191,14 @@ function ZflatDistance(i,j,k,l){
 
 function ZflatDifference(i,j,k,l){
 	//Returns the vector difference
-	var polar1 = ZcartesianToPolar((i - circR)*Zscale, (j - circR)*Zscale);
-	var polar2 = ZcartesianToPolar((k - circR)*Zscale, (l - circR)*Zscale);
+	var polar1 = ZcartesianToPolar((i - circR), (j - circR));
+	var polar2 = ZcartesianToPolar((k - circR), (l - circR));
 
 	polar1[0] = Math.tan((Math.PI/2)*polar1[0]/circR);
 	polar2[0] = Math.tan((Math.PI/2)*polar2[0]/circR);
+
+	polar1[0] = polar1[0]*Zscale;
+	polar2[0] = polar2[0]*Zscale;
 
 	var cart1 = ZpolarToCartesian(polar1[0],polar1[1]);
 	var cart2 = ZpolarToCartesian(polar2[0],polar2[1]);
@@ -188,45 +207,90 @@ function ZflatDifference(i,j,k,l){
 }
 
 
-function ZflatLaplacian(i,j){
+function ZflatLaplacian(i,j,Zdebug){
 	//See page 3 in my new book for documentation
 	var cart00 = ZpolarToCartesian(Zcells[i][j][0], Zcells[i][j][1]);
 	var cart01 = ZpolarToCartesian(Zcells[i][j+1][0], Zcells[i][j+1][1]);
-	var cart02 = ZpolarToCartesian(Zcells[i][j+2][0], Zcells[i][j+2][1]);
+	var cart02 = ZpolarToCartesian(Zcells[i][j-1][0], Zcells[i][j-1][1]);
 	var cart10 = ZpolarToCartesian(Zcells[i+1][j][0], Zcells[i+1][j][1]);
-	var cart20 = ZpolarToCartesian(Zcells[i+2][j][0], Zcells[i+2][j][1]);
-	var du = ZflatDistance(i,j,i+1,j);
-	var dv = ZflatDistance(i,j,i,j+1);
-	var dfdv00 = [(cart10[0]-cart00[0])/dv,(cart10[1]-cart00[1])/dv];
-	var dfdv01 = [(cart20[0]-cart10[0])/dv,(cart20[1]-cart10[1])/dv];
-	var dfdv2 = [(dfdv00[0]-dfdv01[0])/dv, (dfdv00[1]-dfdv01[1])/dv];
-	var dfdu00 = [(cart01[0]-cart00[0])/du,(cart01[1]-cart00[1])/du];
-	var dfdu01 = [(cart02[0]-cart01[0])/du,(cart02[1]-cart01[1])/du];
-	var dfdu2 = [(dfdu01[0]-dfdu00[0])/du, (dfdu01[1]-dfdu00[1])/du];
-	var duV = ZflatDifference(i,j,i+1,j);
-	var dvV = ZflatDifference(i,j,j,j+1);
-	var uvinv = ZinvertMatrix(duV[0], duV[1], dvV[0], dvV[1]);
-	return ([uvinv[0]*dfdu2[0]+uvinv[1]*dfdv2[0]+uvinv[2]*dfdu2[0]+uvinv[3]*dfdv2[0],
-			uvinv[0]*dfdu2[0]+uvinv[1]*dfdv2[0]+uvinv[2]*dfdu2[0]+uvinv[3]*dfdv2[0]]);
+	var cart20 = ZpolarToCartesian(Zcells[i-1][j][0], Zcells[i-1][j][1]);
+	var du0 = ZflatDistance(i,j,i-1,j);
+	var du1 = ZflatDistance(i,j,i+1,j);
+	var dv0 = ZflatDistance(i,j-1,i,j);
+	var dv1 = ZflatDistance(i,j,i,j+1);
+	var dfdv0 = [(cart00[0]-cart02[0])/dv0,(cart00[1]-cart02[1])/dv0];
+	var dfdv1 = [(cart01[0]-cart00[0])/dv1,(cart01[1]-cart00[1])/dv1];
+	var dfdvsq = [(dfdv1[0]-dfdv0[0])/((dv0+dv1)/2), (dfdv1[1]-dfdv0[1])/((dv0+dv1)/2)];
+	var dfdu0 = [(cart00[0]-cart20[0])/du0,(cart00[1]-cart20[1])/du0];
+	var dfdu1 = [(cart10[0]-cart00[0])/du1,(cart10[1]-cart00[1])/du1];
+	var dfdusq = [(dfdu1[0]-dfdu0[0])/((du0+du1)/2), (dfdu1[1]-dfdu0[1])/((du0+du1)/2)];
+	var duV0 = ZflatDifference(i-1,j,i,j);
+	var duV1 = ZflatDifference(i,j,i+1,j);
+	var dvV0 = ZflatDifference(i,j-1,i,j);
+	var dvV1 = ZflatDifference(i,j,i,j+1);
+	var uvinv = ZinvertMatrix((duV0[0]+duV1[0])/2, (duV0[1]+duV1[1])/2, (dvV0[0]+dvV1[0])/2, (dvV0[1]+dvV1[1])/2);
+	
+	if (Zdebug == 1){
+		console.log("hm");
+		console.log(cart00);
+		console.log(cart01);
+		console.log(cart02);
+		console.log(cart10);
+		console.log(cart20);
+		console.log("huh");
+		console.log(du0);
+		console.log(du1);
+		console.log(dv0);
+		console.log(dv1);
+		console.log("wha");
+		console.log(dfdv0);
+		console.log(dfdv1);
+		console.log(dfdvsq);
+		console.log(dfdu0);
+		console.log(dfdu1);
+		console.log(dfdusq);
+		console.log("hrm");
+		console.log(duV0);
+		console.log(duV1);
+		console.log(dvV0);
+		console.log(dvV1);
+		console.log("how");
+		console.log(uvinv);
+		
+	}
+	return ([uvinv[0]*dfdusq[0]+uvinv[1]*dfdvsq[0]+uvinv[2]*dfdusq[0]+uvinv[3]*dfdvsq[0],
+		uvinv[0]*dfdusq[1]+uvinv[1]*dfdvsq[1]+uvinv[2]*dfdusq[1]+uvinv[3]*dfdvsq[1]]);
 }
 
 
 function Zevolve(){
-	for (i = 0; i < 2*circR-2; i++){
-		console.log(i);
-		for (j = 0; j < 2*circR-2; j++){
+	//Applying the differences to each pixel seems to coalesce error
+	//So why don't we instead have a difference matrix that finds all the differences
+	//and then applys them? what a great idea
+	var Zdifference = [];
+
+	for (i = 1; i < 2*circR-1; i++){
+		//console.log(i);
+		Zdifference.push([]);
+		for (j = 1; j < 2*circR-1; j++){
 			var lap = ZflatLaplacian(i,j);
 			var KE = [-lap[0]*hbar*hbar/(2*m), -lap[1]*hbar*hbar/(2*m)];
 			var V = [Zpotential[i][j]*Zcells[i][j][0],Zpotential[i][j]*Zcells[i][j][1]];
 			var H = [KE[0]+V[0],KE[1]+V[1]];
 			//This is the hamiltonian value
 			var ddtPsi = [H[1]/hbar, -H[0]/hbar];
-			var cart = ZpolarToCartesian(Zcells[i][j][0],Zcells[i][j][1]);
-			cart = [cart[0]+ddtPsi[0], cart[1]+ddtPsi[1]];
-			var polar = ZcartesianToPolar(cart[0],cart[1]);
-			Zcells[i][j] = [polar[0],polar[1]];
-		}
+			Zdifference[Zdifference.length -1].push(ddtPsi);
+			}
 	}
+	for (i = 1; i < 2*circR-1; i++){
+	for (j = 1; j < 2*circR-1; j++){
+		var cart = ZpolarToCartesian(Zcells[i][j][0],Zcells[i][j][1]);
+		cart = [cart[0]+Zdifference[i-1][j-1][0], cart[1]+Zdifference[i-1][j-1][1]];
+		var polar = ZcartesianToPolar(cart[0],cart[1]);
+		Zcells[i][j] = [polar[0],polar[1]];
+	}
+	}
+
 }
 
 
@@ -239,14 +303,19 @@ function Zstart(){
 }
 
 function Zgo(){
-	console.log("starting to go");
+	var t0 = performance.now();
 	Zevolve();
-	console.log("evolved");
+	var t1 = performance.now();
 	Zdraw();
+	var t2 = performance.now();
 	console.log("drawn");
+	console.log(t1-t0);
+	console.log(t2-t1);
 }
 
 
+Zstart();
+var Zinterval = setInterval(Zgo,10);
 
 
 
