@@ -1,0 +1,56 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+  
+\newenvironment{problem}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ %If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+    
+\renewenvironment{proof}{{\bfseries Solution:}}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IMPORTANT: THE ABOVE LINE MAKES "PROOFS" INTO SOLUTIONS IN CASE U R PHYSICS OR SOMETHING
+
+\begin{document}
+      
+\title{Curvature of space as a time-independent perturbation}
+\author{Joshua Lin\\Enrichment activity for Physics 137B, Fall 2017, Professor A.Charman}
+
+\maketitle
+       
+%%%%%%%%%%%%%%%%%%%%% 
+%\begin{mdframed}
+%\begin{problem}{0}
+
+%\end{problem}
+%\end{mdframed}
+        
+%\begin{proof}
+
+%\end{proof}
+%%%%%%%%%%%%%%%%%%%%%
+
+\section{Overview}
+
+In our quantum physics lectures, both 137A and B, we were introduced to the Hamiltonian operator, which takes the form:
+$$H = - \frac{\hbar^2}{2m} \nabla^2 + V$$
+where $V$ is our potential. In class, we have only dealt with the case where we are interested in solutions to Schrodinger's equation:
+$$i \hbar \frac{d}{dt} | \psi \rangle = H | \psi \rangle$$
+in flat space (usually one, two or three dimensional Euclidean space, and occassionally compact spaces such as a closed interval (infinite square well) or a circle (question in homework on calculating energy levels of a fidget spinner)). In flat space, we can always find a cartesian set of coordinates to describe the space, at least locally, which leads to a laplacian of the form:
+$$\nabla^2_{\text{flat}} = \partial_i \partial_i$$
+using the Einstein summation notation, and taking $i$ to range over a cartesian basis. But what if we wanted to solve Schrodinger's equation on a more general manifold? If this manifold has geometry described by a metric $g_{ij}$, then our laplacian is generalised to the Laplace-Beltrami operator, and is given by:
+$$\nabla^2_{\text{curved}} = \frac{1}{\sqrt{|g|}} \partial_i (\sqrt{|g|} g^{ij} \partial_j)$$
+(Note that in the case of Euclidean space, our metric $g_{ij}$ is the delta function, and our operator reduces to $\partial_i \partial_i$ as expected). Now, assuming that the deviation of our new $\nabla^2$ operator from the old $\nabla^2$ operator in flat space is small in some sense, then it might be interesting to consider this as a time independent perturbation problem, namely:
+$$H = - \frac{\hbar^2}{2m} \nabla^2_{\text{curved}} + V = \bigg(- \frac{\hbar^2}{2m} \nabla^2_{\text{flat}} + V\bigg) - \frac{\hbar^2}{2m} (\nabla^2_{\text{curved}} - \nabla^2_{\text{flat}})$$
+where our perturbation is given by:
+$$H_1 = -\frac{\hbar^2}{2m} (\nabla^2_{\text{curved}} - \nabla^2_{\text{flat}})$$
+
+\section{Hyperbolic Geometry}
+One of the most studied non-euclidean geometries is that of Hyperbolic Space, whose defining feature is a constant negative sectional curvature. As a model for the hyperbolic plane, consider a two dimensional space described by "geodesic-polar" coordinates $r, \theta$, which are the analogue to polar coordinates in the Euclidean plane. The metric will be given by:
+$$g_{rr} = 1, g_{\theta \theta} = S_k^2(r), g_{r \theta} = g_{\theta r} = 0$$
+where
+$$S_k(r) = \frac{1}{\sqrt{-k}} \sinh(\sqrt{-k} r)$$
+and $k$ is a negative real number. Notice firstly that in the limit as $k \to 0^-$, we have $g_{\theta \theta} \to r^2$, which is the usual metric for polar coordinates of the Euclidean plane. Notice also that we have sectional curvature:
+$$
+
+\end{document}
+
+
