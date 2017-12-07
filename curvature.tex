@@ -48,8 +48,38 @@ One of the most studied non-euclidean geometries is that of Hyperbolic Space, wh
 $$g_{rr} = 1, g_{\theta \theta} = S_k^2(r), g_{r \theta} = g_{\theta r} = 0$$
 where
 $$S_k(r) = \frac{1}{\sqrt{-k}} \sinh(\sqrt{-k} r)$$
-and $k$ is a negative real number. Notice firstly that in the limit as $k \to 0^-$, we have $g_{\theta \theta} \to r^2$, which is the usual metric for polar coordinates of the Euclidean plane. Notice also that we have sectional curvature:
-$$
+and $k$ is a negative real number. Notice firstly that in the limit as $k \to 0^-$, we have $g_{\theta \theta} \to r^2$, which is the usual metric for polar coordinates of the Euclidean plane. Now, we can verify that the curvature of this surface is constant everywhere by standard computations:
+$$\Gamma^d_{ab} = \frac{1}{2} g^{cd}(\partial_b g_{ca} + \partial_a g_{cb} - \partial_c g_{ab})$$
+To find the Christoffel symbols, which come out to be:
+$$\Gamma^{r}_{\theta \theta} = - \frac{1}{2} \partial_r S_k^2; \Gamma^\theta_{r \theta} = \Gamma^\theta_{\theta r} = \frac{1}{2 S_k^2} \partial_r S_k^2$$
+with all other components as zero. Now, we can compute the curvature tensor:
+$$R^l_{ijk} = \frac{\partial}{\partial x^j} \Gamma^{l}_{ik} - \frac{\partial}{\partial x^k} \Gamma^l_{ij} + \Gamma^l_{js}\Gamma^s_{ik} - \Gamma^l_{ks} \Gamma^s_{ij}$$
+which come out to be:
+$$R^r_{\theta r \theta} = -R^r_{\theta \theta r} = \partial_r \Gamma^r_{\theta \theta} - \Gamma^r_{\theta \theta} \Gamma^\theta_{r \theta}; R^{\theta}_{r r \theta} = - R^\theta_{r \theta r} = \partial_r \Gamma^\theta_{r \theta} + \Gamma^{\theta}_{r \theta}\Gamma^{\theta}_{r \theta}$$
+And finally, we can find the sectional curvature (which coincides with the Gaussian curvature; since it is a two-manifold):
+$$K = \frac{g_{ab}R^{a}_{cde}u^ev^dv^cu^b}{g_{a'b'}u^{a'}u^{b'}g_{c'd'}v^{c'}v^{d'} - (g_{e'f'}u^{e'}v^{f'})^2}$$
+where $u$, $v$ are linearly independent vectors in the tangent space (note the curvature is invariant under different choices of $u$ and $v$, as it should be). Choosing $u$ to be the unit vector in the $\theta$ direction and $v$ to be the unit vector in the $r$ direction, we find:
+$$K = k$$
+everywhere, which is exactly what we expect. Now that we have verified that our model is indeed the hyperbolic plane (with constant curvature $k$), we can find the laplacian:
+$$\nabla^2_{\text{curved}} = \frac{1}{\sqrt{|g|}} \partial_i (\sqrt{|g|} g^{ij} \partial_j)$$
+$$= \bigg(\frac{1}{r} \partial_r + \partial_r^2 + \frac{1}{r^2} \partial_{\theta}^2 \bigg) + \bigg(\frac{1}{S_k^2} - \frac{1}{r^2}\bigg)\partial_\theta^2$$
+where the first part in the above equation is simply the laplacian if our polar coordinates described flat space. So our perturbation in the hyperbolic plane has form:
+$$H_1 = - \frac{\hbar^2}{2m} \bigg( \frac{1}{S_k^2} - \frac{1}{r^2} \bigg) \partial_\theta^2$$
+
+
+\section{Application to Quantum Harmonic Oscillator in Hyperbolic Plane}
+Now, we can consider the Quantum Harmonic Oscillator in the plane, which has well-known solution in the case where the plane is flat. The wavefunctions of the one-dimensional Harmonic Oscillator are given by: 
+$$\psi_n(x) = A_n H_n \bigg( \frac{x}{\sigma_0}\bigg) e^{-x^2/2\sigma_0^2};\qquad A_n := \frac{1}{\sqrt{2^n n!}} \frac{1}{(\pi \sigma_0^2)^{1/4}};\qquad \sigma_0 := (\hbar/m\omega)^{1/2} $$
+with corresponding energy levels:
+$$E_n = \bigg( n + \frac{1}{2} \bigg) \hbar \omega$$
+Our solution to the two dimensional case, being separable, is given by:
+$$\psi_{nm}(x,y) = \psi_n(x) \psi_m(y); \qquad E_{nm} = (n + m + 1) \hbar \omega$$
+Now, suppose our curvature $k$ is small in magnitude. Then, if we are only interested in first order effects, we can do first order perturbation theory; whilst taylor expanding our perturbation in $k$ to find:
+$$H_1 \approx -\frac{\hbar^2}{2m} \frac{k}{3} \partial_{\theta}^2$$
+to first order in $k$. Applying first order perturbation theory, we find the change in energy levels due to perturbation:
+$$\langle n,m | H_1 | n,m \rangle = -\frac{\hbar^3 k }{6m^2 \omega} A_n^2 A_m^2 \int du \int dv e^{-(u^2 + v^2)} \bigg(H_n( u ) H_m (v )\bigg) \partial_\theta^2 \bigg(H_n( u) H_m (v)\bigg) $$
+where we make the coordinate transformation $u = x/\sigma_0$ and $v = y/\sigma_0$ (Note that $\theta = \text{atan} (v/u)$). 
+
 
 \end{document}
 
