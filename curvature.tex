@@ -70,7 +70,7 @@ $$H_1 = - \frac{\hbar^2}{2m} \bigg( \frac{1}{S_k^2} - \frac{1}{r^2} \bigg) \part
 \section{Application to Quantum Harmonic Oscillator in Hyperbolic Plane}
 Now, we can consider the Quantum Harmonic Oscillator in the plane, which has well-known solution in the case where the plane is flat. The wavefunctions of the one-dimensional Harmonic Oscillator are given by: 
 $$\psi_n(x) = A_n H_n \bigg( \frac{x}{\sigma_0}\bigg) e^{-x^2/2\sigma_0^2};\qquad A_n := \frac{1}{\sqrt{2^n n!}} \frac{1}{(\pi \sigma_0^2)^{1/4}};\qquad \sigma_0 := (\hbar/m\omega)^{1/2} $$
-with corresponding energy levels:
+where $H_n$ are the physicist's Hermite polynomials, with corresponding energy levels:
 $$E_n = \bigg( n + \frac{1}{2} \bigg) \hbar \omega$$
 Our solution to the two dimensional case, being separable, is given by:
 $$\psi_{nm}(x,y) = \psi_n(x) \psi_m(y); \qquad E_{nm} = (n + m + 1) \hbar \omega$$
@@ -78,7 +78,19 @@ Now, suppose our curvature $k$ is small in magnitude. Then, if we are only inter
 $$H_1 \approx -\frac{\hbar^2}{2m} \frac{k}{3} \partial_{\theta}^2$$
 to first order in $k$. Applying first order perturbation theory, we find the change in energy levels due to perturbation:
 $$\langle n,m | H_1 | n,m \rangle = -\frac{\hbar^3 k }{6m^2 \omega} A_n^2 A_m^2 \int du \int dv e^{-(u^2 + v^2)} \bigg(H_n( u ) H_m (v )\bigg) \partial_\theta^2 \bigg(H_n( u) H_m (v)\bigg) $$
-where we make the coordinate transformation $u = x/\sigma_0$ and $v = y/\sigma_0$ (Note that $\theta = \text{atan} (v/u)$). 
+where we make the coordinate transformation $u = x/\sigma_0$ and $v = y/\sigma_0$ (Note that $\theta = \text{atan} (v/u)$). This may seem slightly problematic for two reasons. Conceptually; in class we've always understood perturbations to be perturbations in the potential energy, which only depend on spatial degrees (not their derivatives). The 'proof' of the validity of time independent perturbation theory (matching coefficients in orders of the perturbation) doesn't require that the perturbation be only in terms of spatial degrees however, so we are fine in that regard. Computationally; this might look like an ugly integral, but actually it works just fine:
+$$\partial_\theta^2 \bigg( H_n(u) H_m(v) \bigg) = (\partial_\theta^2 H_n) H_m + 2(\partial_\theta H_n) (\partial_\theta H_m) + H_n (\partial_\theta^2 H_m)$$
+$$ = (y^2 \partial_u^2 -x \partial_u)H_n(u) H_m(v) -2uv (\partial_u H_n(u))(\partial_v H_m(v)) + H_n(u)(u^2 \partial_v^2 - v \partial_v)H_m(v)$$
+Notice that we have:
+$$\partial_z H_n(z) = 2z H_n(z) - H_{n+1}(z)$$
+Using this formula, the above reduces to:
+$$\partial_\theta^2 \bigg( H_n(u) H_m(v) \bigg) = u^2 H_n(u) H_{m+2}(v) -2uvH_{n+1}(u)H_{m+1}(v) + v^2 H_{n+2}(u) H_m(v)$$
+Plugging this back into our original integral, the $H_n H_{m+2}$ and $H_{n+2}H_m$ terms vanish by orthogonality of the eigenstates of the one-dimensional harmonic oscillator (the magic of mathematics!) so we end with:
+$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^3 k }{3m^2 \omega} A_n^2 A_m^2 \int du \int dv uv e^{-(u^2 + v^2)} H_n(u) H_m(v) H_{n+1}(u) H_{m+1}(v)$$
+Expressing this in other terms, we have:
+$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^2 k}{3 m} \frac{A_n}{A_{n+1}} \frac{A_m}{A_{m+1}} \langle n | \bigg( \frac{\hat{a} + \hat{\dagger{a}}}{\sqrt{2}} \bigg) | n+1 \rangle \langle m | \bigg( \frac{\hat{a} + \hat{\dagger{a}}}{\sqrt{2}} \bigg) | m+1 \rangle$$
+where $\hat{a}$ and $\hat{\dagger{a}}$ are our annihilation and creation operators respectively. Our final formula is:
+$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^2 k}{3 m} (n+1)(m+1)$$
 
 
 \end{document}
