@@ -85,12 +85,20 @@ Notice that we have:
 $$\partial_z H_n(z) = 2z H_n(z) - H_{n+1}(z)$$
 Using this formula, the above reduces to:
 $$\partial_\theta^2 \bigg( H_n(u) H_m(v) \bigg) = u^2 H_n(u) H_{m+2}(v) -2uvH_{n+1}(u)H_{m+1}(v) + v^2 H_{n+2}(u) H_m(v)$$
+$$-vH_n(u)H_{m+1}(v) -u H_{n+1}(u) H_m (v)$$
 Plugging this back into our original integral, the $H_n H_{m+2}$ and $H_{n+2}H_m$ terms vanish by orthogonality of the eigenstates of the one-dimensional harmonic oscillator (the magic of mathematics!) so we end with:
-$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^3 k }{3m^2 \omega} A_n^2 A_m^2 \int du \int dv uv e^{-(u^2 + v^2)} H_n(u) H_m(v) H_{n+1}(u) H_{m+1}(v)$$
+$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^3 k }{6m^2 \omega} A_n^2 A_m^2 \int du \int dv e^{-(u^2 + v^2)} \bigg[ 2uv H_n(u) H_m(v) H_{n+1}(u) H_{m+1}(v)$$
+$$-v H_n(u)^2 H_m(v) H_{m+1}(v) -u H_n(u) H_{n+1}(u) H_m(v)^2 \bigg]$$
 Expressing this in other terms, we have:
-$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^2 k}{3 m} \frac{A_n}{A_{n+1}} \frac{A_m}{A_{m+1}} \langle n | \bigg( \frac{\hat{a} + \hat{\dagger{a}}}{\sqrt{2}} \bigg) | n+1 \rangle \langle m | \bigg( \frac{\hat{a} + \hat{\dagger{a}}}{\sqrt{2}} \bigg) | m+1 \rangle$$
-where $\hat{a}$ and $\hat{\dagger{a}}$ are our annihilation and creation operators respectively. Our final formula is:
-$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^2 k}{3 m} (n+1)(m+1)$$
+$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^2 k}{6 m} \bigg[ 2 \frac{A_n}{A_{n+1}} \frac{A_m}{A_{m+1}} \langle n | \bigg( \frac{\hat{a} + \hat{a^{\dagger}}}{\sqrt{2}} \bigg) | n+1 \rangle \langle m | \bigg( \frac{\hat{a} + \hat{a^{\dagger}}}{\sqrt{2}} \bigg) | m+1 \rangle$$
+$$- \frac{A_n}{A_{n+1}} \langle n | \bigg( \frac{\hat{a} + \hat{a^{\dagger}}}{\sqrt{2}} \bigg) | n+1 \rangle - \frac{A_m}{A_{m+1}} \langle m | \bigg( \frac{\hat{a} + \hat{a^{\dagger}}}{\sqrt{2}} \bigg) | m+1 \rangle \bigg]  $$
+where $\hat{a}$ and $\hat{a^{\dagger}}$ are our annihilation and creation operators respectively. Our final formula is:
+$$\langle n,m | H_1 | n,m \rangle =  \frac{\hbar^2 k}{6 m} (2nm+n+m)$$
+
+\section{Behaviour of Solution}
+
+Recall that the curvature $k$ is defined to be negative for the hyperbolic plane, so the perturbation due to negative curvature lowers the energies of all the eigenstates. Also, due to the $nm$ factor in the perturbation energy, the energy levels increase slower and slower (as $n+m$ increases) to a fixed maximum energy, before decreasing. All of these are features of the exact solution of the quantum harmonic oscillator in the hyperbolic plane (https://arxiv.org/pdf/0709.0399.pdf), and it turns out that there are only a finite number of eigenstates (only for the $n+m$ that yield energies below the maximum energy). Our perturbative method didn't yield the exact energies derived in the paper, but the fact that it gave the same characteristics as the exact solution might be seen as a positive.  
+
 
 
 \end{document}
